@@ -107,32 +107,6 @@ fn get_rules_for_update<'a>(
         .collect()
 }
 
-// fn sort_ordering_rules(update: &Vec<i32>, ordering_rules: &Vec<&(i32, i32)>) -> Vec<i32> {
-//     let mut mutable_update = update.clone();
-//     let mut sorted_pages = vec![];
-//     let mut earliest_page = mutable_update.pop().unwrap();
-//     while sorted_pages.len() != update.len() {
-//         println!("mutable_update = {mutable_update:?}");
-//         println!("earliest_page = {earliest_page}");
-//         if sorted_pages.contains(&earliest_page) {
-//             earliest_page = match mutable_update.pop() {
-//                 Some(value) => value,
-//                 None => break
-//             };
-//         }
-//         if let Some(new_earliest_page) = ordering_rules.iter().find(|rule| rule.1 == earliest_page && !sorted_pages.contains(&rule.0))
-//         {
-//             mutable_update.push(earliest_page);
-//             earliest_page = new_earliest_page.0;
-//         } else {
-//             println!("push {earliest_page}");
-//             sorted_pages.push(earliest_page);
-//         }
-//     }
-
-//     sorted_pages
-// }
-
 fn sort_ordering_rules(update: &Vec<i32>, ordering_rules: &Vec<&(i32, i32)>) -> Vec<i32> {
     let mut sorted_update = update.clone();
     sorted_update.sort_by(|a, b| {
@@ -148,7 +122,6 @@ fn sort_ordering_rules(update: &Vec<i32>, ordering_rules: &Vec<&(i32, i32)>) -> 
 
 fn fix_invalid_update(update: &Vec<i32>, ordering_rules: &Vec<(i32, i32)>) -> Vec<i32> {
     let ordering_rules_for_this_update = get_rules_for_update(&update, &ordering_rules);
-    println!("{ordering_rules_for_this_update:?}");
     let sorted_update = sort_ordering_rules(&update, &ordering_rules_for_this_update);
 
     sorted_update
@@ -267,15 +240,14 @@ mod tests {
         let invalid_update2 = vec![61, 13, 29];
         let invalid_update3 = vec![97, 13, 75, 29, 47];
 
-        // assert_eq!(
-        //     fix_invalid_update(&invalid_update1, &ordering_rules),
-        //     vec![97, 75, 47, 61, 53]
-        // );
-        // assert_eq!(
-        //     fix_invalid_update(&invalid_update2, &ordering_rules),
-        //     vec![61, 29, 13]
-        // );
-        // [(97, 13), (97, 47), (75, 29), (29, 13), (97, 29), (47, 13), (75, 47), (97, 75), (47, 29), (75, 13)]
+        assert_eq!(
+            fix_invalid_update(&invalid_update1, &ordering_rules),
+            vec![97, 75, 47, 61, 53]
+        );
+        assert_eq!(
+            fix_invalid_update(&invalid_update2, &ordering_rules),
+            vec![61, 29, 13]
+        );
         assert_eq!(
             fix_invalid_update(&invalid_update3, &ordering_rules),
             vec![97, 75, 47, 29, 13]
